@@ -24,7 +24,7 @@
         }
 
         _self.init = function(){
-            socket = window.io.connect('/');
+            socket = window.io.connect('//hamidraza.net:3000/');
             socket.on('message', function (data) {
                 console.log(data);
                 if(data.message) {
