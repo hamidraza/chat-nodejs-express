@@ -2,3 +2,22 @@ body {
 	font-family: arial;
 	font-size: 12px;
 }
+#content ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+#content ul li {
+	padding: 5px 3px;
+	border-bottom: 1px solid #eee;
+}
+#content ul li small {
+	color: #ccc;
+}
+#content ul li.you {
+	color: #aaa;
+	text-align: right;
+}
+#content ul li.you small {
+	display: none;
+}

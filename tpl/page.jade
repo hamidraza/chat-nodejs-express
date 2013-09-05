@@ -2,14 +2,23 @@
 html
     head
         title= "Real time web chat"
-        script(src='/js/chat.js')
-        script(src='/socket.io/socket.io.js')
         link(rel='stylesheet', href='/css/style.css')
     body
-        #content(style='width: 200px; height: 300px; margin: 0 0 20px 0; border: solid 1px #999; overflow: auto;')
-        .controls
-            input.field#field(style='width:150px;')
-            input.send#send(type='button', value='send')
-            br
+        .chat-box(style="display:none;")
+            #content(style='width: 200px; height: 300px; margin: 0 0 20px 0; border: solid 1px #999; overflow: auto;')
+                ul
+            form.chat-controls
+                input.field#field(style='width:150px;')
+                input.send#send(type='submit', value='send')
+        form.start-chat
             | Your Name : 
-            input.name#name(style='width:150px;')
+            input.username(style='width:150px;', name='username', placeholder="enter Your Name", required)
+            br
+            | Your Email : 
+            input.useremail(style='width:150px;', name='useremail', required, type='email', placeholder="enter Email address")
+            br
+            input.submit(type='submit', value='start')
+
+        script(src='/socket.io/socket.io.js')
+        script(src='//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js')
+        script(src='/js/chat.js')

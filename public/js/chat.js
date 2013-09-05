@@ -1,32 +1,59 @@
-window.onload = function() {
- 
-    var socket = io.connect('/');
-    var field = document.getElementById("field");
-    var sendButton = document.getElementById("send");
-    var content = document.getElementById("content");
-    var name = document.getElementById("name");
- 
-    socket.on('message', function (data) {
-        if(data.message) {
-            content.innerHTML = content.innerHTML+'<hr>'+(data.message || 'Empty')+' - <small>'+(data.username || 'guest')+'</small>';
-            content.scrollTop = content.scrollHeight;
-        } else {
-            console.log("There is a problem:", data);
+(function($){
+
+    function userObj(){
+        var _self = this;
+        _self.name = false;
+        _self.email = false;
+
+        var field = $("#field");
+        var sendButton = $("#send");
+        var content = $("#content ul");
+        var socket = false;
+
+        _self.sendMessage = function(msg){
+            if(!_self.name){
+                _self.name = prompt("Please type your name!");
+                if(_self.name) _self.sendMessage(msg);
+            }
+            var msgData = {
+                message: field.val(),
+                username: _self.name
+            };
+            socket.emit('send', msgData);
+            field.val('');
         }
+
+        _self.init = function(){
+            socket = window.io.connect('/');
+            socket.on('message', function (data) {
+                console.log(data);
+                if(data.message) {
+                    var messageLi = $('<li></li>',{
+                        'html': (data.message || 'Empty')+'<small> - '+(data.username || 'guest')+'</small>',
+                        'class': (data.username == _self.name? 'you': data.username)
+                    });
+                    content.append(messageLi);
+                } else {
+                    console.log("There is a problem:", data);
+                }
+            });
+
+            $('.chat-controls').on('submit', function(){
+                _self.sendMessage();
+                return false;
+            });
+        }
+    }
+
+    var user = new userObj();
+    $('form.start-chat').on('submit', function(){
+        user.name = $('.username', this).val();
+        user.email = $('.useremail', this).val();
+        user.init();
+        $(this).remove();
+        $('.chat-box').css('display','block');
+        return false;
     });
 
-    socket.on('connection', function(data){
-        console.log('new connection');
-    });
- 
-    sendButton.onclick = function() {
-        if(name.value == "") {
-            alert("Please type your name!");
-        } else {
-            var text = field.value;
-            socket.emit('send', { message: text, username: name.value });
-            field.value = "";
-        }
-    };
- 
-}
+
+})(jQuery);
