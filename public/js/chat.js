@@ -25,7 +25,6 @@
         }
 
         _self.start = function(){
-
             socket.on('message', function (data) {
                 if(data.message) {
                     $('<li></li>',{
@@ -44,7 +43,7 @@
         }
 
         _self.init = function(){
-            socket = window.io.connect('/');
+            socket = window.io.connect('//hamidraza.net:3000/');
             socket.emit('register', {name: _self.name, emial: _self.email});
             socket.on('register', function (data) {
                 console.log(data);
