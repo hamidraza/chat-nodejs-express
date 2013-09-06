@@ -15,10 +15,19 @@ app.get("/", function(req, res){
 var io = require('socket.io').listen(app.listen(port));
 console.log("Listening on port " + port);
 
+var users = {};
+
 io.sockets.on('connection', function(socket){
-    console.log(socket.id);
-    socket.emit('message', { message: 'welcome to the chat', username: 'Admin' });
+
+    socket.on('register', function (data) {
+        users[socket.id] = data;
+        socket.emit('register', {'success': true, 'id': socket.id});
+        socket.emit('message', { message: 'welcome to the chat', username: 'Admin', to: data });
+    });
+
     socket.on('send', function (data) {
+        data.id = socket.id;
         io.sockets.emit('message', data);
     });
+
 });

@@ -4,6 +4,7 @@
         var _self = this;
         _self.name = false;
         _self.email = false;
+        _self.id = false;
 
         var field = $("#field");
         var sendButton = $("#send");
@@ -23,16 +24,14 @@
             field.val('');
         }
 
-        _self.init = function(){
-            socket = window.io.connect('/');
+        _self.start = function(){
+
             socket.on('message', function (data) {
-                console.log(data);
                 if(data.message) {
-                    var messageLi = $('<li></li>',{
+                    $('<li></li>',{
                         'html': (data.message || 'Empty')+'<small> - '+(data.username || 'guest')+'</small>',
-                        'class': (data.username == _self.name? 'you': data.username)
-                    });
-                    content.append(messageLi);
+                        'class': (data.id == _self.id? 'you': '')
+                    }).appendTo(content);
                 } else {
                     console.log("There is a problem:", data);
                 }
@@ -43,15 +42,31 @@
                 return false;
             });
         }
+
+        _self.init = function(){
+            socket = window.io.connect('/');
+            socket.emit('register', {name: _self.name, emial: _self.email});
+            socket.on('register', function (data) {
+                console.log(data);
+                if(data.id){
+                    _self.id = data.id;
+                    _self.start();
+                }else{
+                    alert('unable to register you on the network, The page will reload now.');
+                    document.location.reload();
+                }
+            });
+        }
     }
 
     var user = new userObj();
     $('form.start-chat').on('submit', function(){
-        user.name = $('.username', this).val();
-        user.email = $('.useremail', this).val();
-        user.init();
-        $(this).remove();
+        var _this = $(this);
+        user.name = $('.username', _this).val();
+        user.email = $('.useremail', _this).val();
+        _this.remove();
         $('.chat-box').css('display','block');
+        user.init();
         return false;
     });
 
