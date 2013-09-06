@@ -43,7 +43,7 @@
         }
 
         _self.init = function(){
-            socket = window.io.connect('//hamidraza.net:3000/');
+            socket = window.io.connect('//chat.hamidraza.net:3000/');
             socket.emit('register', {name: _self.name, emial: _self.email});
             socket.on('register', function (data) {
                 console.log(data);
