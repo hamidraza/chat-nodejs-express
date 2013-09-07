@@ -27,7 +27,7 @@ body {
 	padding: 5px 3px;
 }
 .chat-box {
-	position: absolute;
+	position: fixed;
 	right: 10px;
 	bottom: 0;
 	box-shadow: 1px 1px 1px #ccc;
