@@ -2,27 +2,40 @@
 html
     head
         title= "Real time web chat - HamidRaza.net"
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        link(rel='stylesheet', href='//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css')
         link(rel='stylesheet', href='/css/style.css')
     body
-        .chat-box(style="display:none;")
-            #content(style='width: 200px; height: 300px; margin: 0 0 20px 0; border: solid 1px #999; overflow: auto;')
-                ul
-            form.chat-controls
-                input.field#field(style='width:150px;', placeholder='Enter message...')
-                input.send#send(type='submit', value='send')
-        form.start-chat
-            | Your Name : 
-            input.username(style='width:150px;', name='username', placeholder="enter Your Name", required)
-            br
-            | Your Email : 
-            input.useremail(style='width:150px;', name='useremail', required, type='email', placeholder="enter Email address")
-            br
-            input.submit(type='submit', value='start')
-        footer
-            |Source : 
-            a(href='https://github.com/hamidraza/chat-nodejs-express')
-                |Github
+        .container
+            .chat-box.hidden-box.new-message
+                h4.chat-box-header Goup chat service
+                .chat-box-wrapper
+                    
+                    .chat-area(style="display:none;")
+                        #content(style='height: 300px; margin: 0 0 5px 0; border: solid 1px #ccc; background: #fff; overflow: auto;')
+                            ul
+                        
+                        form.chat-controls
+
+                            div.input-group
+                                input.form-control.field#field(placeholder='Enter message...')
+                                span.input-group-btn
+                                    button.btn.btn-default Go!
+
+
+                    form.start-chat.clearfix(role="form")
+                        .form-group
+                            //label(for="username") Name
+                            input.form-control.username#username(placeholder="Enter your name", required)
+                        div.form-group
+                            //label(for="useremail") Email
+                            input.useremail.form-control#useremail(placeholder="Enter your email", required, type="email")
+                        button.submit.btn.btn-default.pull-right(type="submit") Start chat
+                    
+                    footer Source :
+                        a(href='https://github.com/hamidraza/chat-nodejs-express') Github
 
         script(src='//hamidraza.net:3000/socket.io/socket.io.js')
         script(src='//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js')
+        script(src='//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js')
         script(src='/js/chat.js')

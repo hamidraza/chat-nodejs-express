@@ -22,31 +22,60 @@ body {
 #content ul li.you small {
 	display: none;
 }
-#field {
-	border: 1px solid #ccc;
-	padding: 5px 3px;
+.field, .field:focus, .field:hover, .field:active, .field:invalid {
+	box-shadow: none;
+	border-color: #ccc;
 }
+
+
 .chat-box {
-	position: absolute;
-	right: 10px;
+	position: fixed;
 	bottom: 0;
-	box-shadow: 1px 1px 1px #ccc;
-	background: #f9f9f9;
-	padding: 10px 15px;
+	right: 10px;
+	width: 300px;
 }
-.chat-box::-webkit-scrollbar-track
-{
+.chat-box-wrapper {
+	background: #f9f9f9;
+	padding: 5px;
+	border: 1px solid #a9a9a9;
+	border-bottom: none;
+}
+.chat-box.hidden-box .chat-box-wrapper {
+	display: none;
+}
+.chat-box-header {
+	background: #ccc;
+	color: #fff;
+	margin: 0;
+	padding: 10px 15px;
+	border: 1px solid #aaa;
+	border-bottom: none;
+	border-radius: 5px 5px 0 0;
+	text-shadow: 0px -1px 0 #333;
+	cursor: pointer;
+}
+.new-message .chat-box-header {
+	background: #333;
+}
+.start-chat {
+	padding-top: 10px;
+}
+
+
+.chat-box::-webkit-scrollbar-track {
 	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
 	background-color: #F5F5F5;
 }
 
-.chat-box::-webkit-scrollbar
-{
+#content::-webkit-scrollbar {
 	width: 6px;
 	background-color: #F5F5F5;
 }
 
-.chat-box::-webkit-scrollbar-thumb
-{
+#content::-webkit-scrollbar-thumb {
 	background-color: #000000;
+}
+
+.btn, .form-control {
+	border-radius: 0;
 }
