@@ -28,7 +28,7 @@
         _self.start = function(){
             socket.on('message', function (data) {
                 if($('.chat-box').hasClass('hidden-box')){
-                    $('.chat-box-header').text('New Messages ('+(_self.newMsgCount++)+')');
+                    $('.chat-box-header').text('New Messages ('+(++_self.newMsgCount)+')');
                     $('.chat-box.hidden-box').addClass('new-message');
                 }
                 if(data.message) {
