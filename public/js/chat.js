@@ -22,10 +22,9 @@
         }
 
         _self.addMessage = function(data){
-            console.log(data);
             if(!data) return false;
             $('<li></li>',{
-                'html': (data.message || 'Empty')+'<small> - '+(data.username || _self.name)+'</small>',
+                'html': (data.message || 'Empty')+'<small> - '+(data.name || _self.name)+'</small>',
                 'class': (!data.id? 'you': '')
             }).appendTo(content);
             $('#content').scrollTop($('#content')[0].scrollHeight);

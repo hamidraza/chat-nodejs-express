@@ -19,6 +19,12 @@ var io = require('socket.io').listen(app.listen(port));
 console.log("Listening on port " + port);
 
 var users = {};
+var messages = [];
+
+var storeMessage = function(data){
+    messages.push(data);
+    if(messages.length > 10) messages.shift();
+}
 
 io.sockets.on('connection', function(socket){
 
@@ -35,6 +41,12 @@ io.sockets.on('connection', function(socket){
             id: 'admin'
         });
 
+        if(messages.length > 0){
+            for(var i in messages){
+                socket.emit('message', messages[i]);
+            }
+        }
+
         // save newuser Data - Mongodb
         var newUser = data;
         newUser.socket_id = socket.id;
@@ -47,6 +59,7 @@ io.sockets.on('connection', function(socket){
             data.id = socket.id;
             data.name = username;
             socket.broadcast.emit('message', data);
+            storeMessage(data);
         });
 
         // Save new Message
