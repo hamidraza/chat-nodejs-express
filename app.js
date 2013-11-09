@@ -23,9 +23,17 @@ var users = {};
 io.sockets.on('connection', function(socket){
 
     socket.on('register', function (data) {
+
         users[socket.id] = data;
+        socket.set('username', data.name);
+        socket.set('email', data.email);
+
         socket.emit('register', {'success': true, 'id': socket.id});
-        socket.emit('message', { message: 'welcome to the chat', username: 'Admin', to: data });
+        socket.emit('message', {
+            message: 'welcome to the chat !!!',
+            name: 'HamidRaza',
+            id: 'admin'
+        });
 
         // save newuser Data - Mongodb
         var newUser = data;
@@ -35,10 +43,11 @@ io.sockets.on('connection', function(socket){
     });
 
     socket.on('send', function (data) {
-        data.id = socket.id;
-        //io.sockets.emit('message', data);
-	socket.broadcast.emit('message', data);
-
+        socket.get('username', function(err, username){
+            data.id = socket.id;
+            data.name = username;
+            socket.broadcast.emit('message', data);
+        });
 
         // Save new Message
         var newMessage = data;

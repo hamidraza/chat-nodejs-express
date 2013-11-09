@@ -21,15 +21,16 @@
             field.val('');
         }
 
-	_self.addMessage = function(data){
-		if(!data) return false;
-                $('<li></li>',{
-                    'html': (data.message || 'Empty')+'<small> - '+(data.username || 'guest')+'</small>',
-                    'class': (data.id == _self.id? 'you': '')
-                }).appendTo(content);
-                $('#content').scrollTop($('#content')[0].scrollHeight);
-		return true;
-	}
+        _self.addMessage = function(data){
+            console.log(data);
+            if(!data) return false;
+            $('<li></li>',{
+                'html': (data.message || 'Empty')+'<small> - '+(data.username || _self.name)+'</small>',
+                'class': (!data.id? 'you': '')
+            }).appendTo(content);
+            $('#content').scrollTop($('#content')[0].scrollHeight);
+            return true;
+        }
 
         _self.start = function(){
             socket.on('message', function (data) {
@@ -43,12 +44,10 @@
             });
 
             $('.chat-controls').on('submit', function(){
-		var data = {
-			message: field.val(),
-			id: _self.id,
-			username: _self.name
-		};
-		if(!_self.addMessage(data)) {
+                var data = {
+                    message: field.val()
+                };
+                if(!_self.addMessage(data)) {
                     console.log("There is a problem:", data);
                 }
                 _self.sendMessage(data);
@@ -57,10 +56,10 @@
         }
 
         _self.init = function(){
-            socket = window.io.connect('//chat.hamidraza.net:3000/');
+            socket = window.io.connect('//hamidraza.net:3000/');
             socket.emit('register', {name: _self.name, emial: _self.email});
             socket.on('register', function (data) {
-                console.log(data);
+                //console.log(data);
                 if(data.id){
                     _self.id = data.id;
                     _self.start();
