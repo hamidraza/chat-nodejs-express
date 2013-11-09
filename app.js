@@ -1,5 +1,6 @@
 var mongo = require('mongodb-wrapper');
 var db = mongo.db('localhost', 27017, 'demo_chat');
+var redis = require('redis').createClient();
 
 var express = require("express");
 var app = express();
@@ -18,12 +19,18 @@ app.get("/", function(req, res){
 var io = require('socket.io').listen(app.listen(port));
 console.log("Listening on port " + port);
 
+
+// Socket work for making things realtime
 var users = {};
 var messages = [];
 
 var storeMessage = function(data){
-    messages.push(data);
-    if(messages.length > 10) messages.shift();
+    if(!data) return false;
+
+    // save data on redis
+    redis.lpush("chat-messages", JSON.stringify(data), function(err, res){
+        redis.ltrim("chat-messages", 0, 10); // keep only 10 latest messages
+    });
 }
 
 io.sockets.on('connection', function(socket){
@@ -41,11 +48,12 @@ io.sockets.on('connection', function(socket){
             id: 'admin'
         });
 
-        if(messages.length > 0){
-            for(var i in messages){
-                socket.emit('message', messages[i]);
-            }
-        }
+        redis.lrange('chat-messages', 0, -1, function(err, msgs){
+            msgs = msgs.reverse();
+            msgs.forEach(function(msg){
+                socket.emit('message', JSON.parse(msg));
+            });
+        });
 
         // save newuser Data - Mongodb
         var newUser = data;
