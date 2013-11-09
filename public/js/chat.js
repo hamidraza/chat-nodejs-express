@@ -12,18 +12,24 @@
         var content = $("#content ul");
         var socket = false;
 
-        _self.sendMessage = function(msg){
+        _self.sendMessage = function(data){
             if(!_self.name){
                 _self.name = prompt("Please type your name!");
-                if(_self.name) _self.sendMessage(msg);
+                if(_self.name) _self.sendMessage(data);
             }
-            var msgData = {
-                message: field.val(),
-                username: _self.name
-            };
-            socket.emit('send', msgData);
+            socket.emit('send', data);
             field.val('');
         }
+
+	_self.addMessage = function(data){
+		if(!data) return false;
+                $('<li></li>',{
+                    'html': (data.message || 'Empty')+'<small> - '+(data.username || 'guest')+'</small>',
+                    'class': (data.id == _self.id? 'you': '')
+                }).appendTo(content);
+                $('#content').scrollTop($('#content')[0].scrollHeight);
+		return true;
+	}
 
         _self.start = function(){
             socket.on('message', function (data) {
@@ -31,19 +37,21 @@
                     $('.chat-box-header').text('New Messages ('+(++_self.newMsgCount)+')');
                     $('.chat-box.hidden-box').addClass('new-message');
                 }
-                if(data.message) {
-                    $('<li></li>',{
-                        'html': (data.message || 'Empty')+'<small> - '+(data.username || 'guest')+'</small>',
-                        'class': (data.id == _self.id? 'you': '')
-                    }).appendTo(content);
-                    $('#content').scrollTop($('#content')[0].scrollHeight);
-                } else {
+                if(!_self.addMessage(data)) {
                     console.log("There is a problem:", data);
                 }
             });
 
             $('.chat-controls').on('submit', function(){
-                _self.sendMessage();
+		var data = {
+			message: field.val(),
+			id: _self.id,
+			username: _self.name
+		};
+		if(!_self.addMessage(data)) {
+                    console.log("There is a problem:", data);
+                }
+                _self.sendMessage(data);
                 return false;
             });
         }

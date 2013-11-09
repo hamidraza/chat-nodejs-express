@@ -36,7 +36,9 @@ io.sockets.on('connection', function(socket){
 
     socket.on('send', function (data) {
         data.id = socket.id;
-        io.sockets.emit('message', data);
+        //io.sockets.emit('message', data);
+	socket.broadcast.emit('message', data);
+
 
         // Save new Message
         var newMessage = data;
