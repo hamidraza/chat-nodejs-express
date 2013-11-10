@@ -37,6 +37,8 @@ io.sockets.on('connection', function(socket){
 
     socket.on('register', function (data) {
 
+        socket.emit('connected users', users);
+        data.id = socket.id;
         users[socket.id] = data;
         socket.set('username', data.name);
         socket.set('email', data.email);
@@ -47,6 +49,7 @@ io.sockets.on('connection', function(socket){
             name: 'HamidRaza',
             id: 'admin'
         });
+        socket.broadcast.emit('user connect', data);
 
         redis.lrange('chat-messages', 0, -1, function(err, msgs){
             msgs = msgs.reverse();
@@ -60,6 +63,14 @@ io.sockets.on('connection', function(socket){
         newUser.socket_id = socket.id;
         db.collection('users').save(newUser);
 
+    });
+
+    socket.on('disconnect', function(d){
+        var userData = users[socket.id];
+        if(userData){
+            io.sockets.emit('disconnect', userData);
+            delete users[socket.id];
+        }
     });
 
     socket.on('send', function (data) {

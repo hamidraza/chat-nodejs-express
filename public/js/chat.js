@@ -31,6 +31,22 @@
             return true;
         }
 
+        _self.addUser = function(data){
+            if(!data) return false;
+            var li = $('<li></li>',{
+                'id': 'user-'+data.id,
+                'text': data.name
+            }).data('user-data', data);
+            li.appendTo('.connected-users ul');
+            return li;
+        }
+
+        _self.removeUser = function(data){
+            if(!data) return false;
+            $('.connected-users ul li#user-'+data.id).remove();
+            return true;
+        }
+
         _self.start = function(){
             socket.on('message', function (data) {
                 if($('.chat-box').hasClass('hidden-box')){
@@ -61,11 +77,26 @@
                 //console.log(data);
                 if(data.id){
                     _self.id = data.id;
+                    _self.addUser({
+                        name: _self.name,
+                        id: _self.id
+                    });
                     _self.start();
                 }else{
                     alert('unable to register you on the network, The page will reload now.');
                     document.location.reload();
                 }
+            });
+            socket.on('connected users', function(data){
+                for(var i in data){
+                    _self.addUser(data[i]);
+                }
+            });
+            socket.on('user connect', function(data){
+                _self.addUser(data);
+            });
+            socket.on('disconnect', function(data){
+                _self.removeUser(data);
             });
         }
     }
